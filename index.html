@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>海钊知识港</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
@@ -18,7 +26,7 @@
             --border-color: #eee;
         }
 
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--primary-bg); color: var(--text-main); margin: 0; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--primary-bg); color: var(--text-main); margin: 0; line-height: 1.6; }
 
         /* --- 顶栏设计 --- */
         nav { 
@@ -33,13 +41,15 @@
             z-index: 1000; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        /* Logo 样式优化：点击无下划线，白色 */
         nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; text-decoration: none; }
         nav .nav-links a { color: white; text-decoration: none; margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
         nav .nav-links a:hover { color: var(--accent-color); }
-        nav .nav-links i { margin-right: 5px; } /* 图标间距 */
+        nav .nav-links i { margin-right: 5px; }
 
+        /* --- 容器布局 --- */
         .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; }
+        
+        /* --- 左侧栏 --- */
         .left-col { flex: 1; min-width: 280px; }
         .profile-card, .category-card { 
             background: var(--sidebar-bg); border-radius: 12px; padding: 1.5rem; 
@@ -50,17 +60,48 @@
         
         .category-item { display: block; text-decoration: none; color: inherit; padding: 0.8rem; border-radius: 8px; transition: 0.2s; }
         .category-item:hover { background: #f0f7ff; color: var(--accent-color); }
-        .category-item h4 { margin: 0 0 4px 0; font-size: 1rem; }
+        .category-item h4 { margin: 0 0 4px 0; font-size: 1rem; display: flex; align-items: center; }
         .category-item p { margin: 0; font-size: 0.8rem; color: #7f8c8d; }
 
-        .right-col { flex: 3; }
-        .note-card { 
-            background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        /* 侧边栏图标对齐优化 */
+        .category-item h4 i {
+            width: 25px; 
+            margin-right: 8px; 
+            color: var(--primary-color);
+            text-align: center;
         }
-        .note-card h3 { margin-top: 0; color: var(--accent-color); }
-        .tag { background: #eef2f3; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; color: #666; }
 
+        /* --- 右侧内容区 --- */
+        .right-col { flex: 3; }
+
+        /* 笔记卡片点击区域优化 */
+        .right-col a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .note-card { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 2rem; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动画过渡 */
+            cursor: pointer;
+        }
+
+        /* 悬停效果：浮起并加深阴影 */
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .note-card h3 { margin-top: 0.5rem; color: var(--accent-color); }
+        .tag { background: #eef2f3; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; color: #666; }
+        .tag i { margin-right: 5px; }
+
+        /* --- 响应式适配 --- */
         @media (max-width: 850px) {
             .container { flex-direction: column; }
             nav { flex-direction: column; padding: 1rem; }
@@ -95,38 +136,42 @@
             <div class="category-card">
                 <h3>栏目入口</h3>
                 <a href="articles/wet_lab/wet_lab_index.html" class="category-item">
-                    <h4>🧪 湿实验</h4>
+                    <h4><i class="fas fa-flask"></i> 湿实验</h4>
                     <p>测序原理、载体构建、基因工程</p>
                 </a>
                 <a href="articles/dry_lab/dry_lab_index.html" class="category-item">
-                    <h4>💻 干实验</h4>
+                    <h4><i class="fas fa-code"></i> 干实验</h4>
                     <p>分子对接、生信脚本、Linux 配置</p>
                 </a>
                 <a href="articles/resources/resources_index.html" class="category-item">
-                    <h4>📚 资源站</h4>
+                    <h4><i class="fas fa-book"></i> 资源站</h4>
                     <p>工具链接、复用管线</p>
                 </a>
                 <a href="articles/about/about_index.html" class="category-item">
-                    <h4>🙋 关于我</h4>
+                    <h4><i class="fas fa-user"></i> 关于我</h4>
                     <p>了解我的研究兴趣与技能</p>
                 </a>
             </div>
         </aside>
 
         <section class="right-col">
-            <article class="note-card" id="dry">
-                <span class="tag">干实验</span>
-                <h3>富集分析与超几何分布</h3>
-                <p>在进行富集分析时</p>
-                <small>2026-01-15</small>
-            </article>
+            <a href="articles/dry_lab/rnaseq/enrichment_analysis/enrichment_analysis.html">
+                <article class="note-card">
+                    <span class="tag"><i class="fas fa-code"></i> 干实验</span>
+                    <h3>富集分析与超几何分布</h3>
+                    <p>如何实现一张纸，一只笔，手动计算富集。</p>
+                    <small>2025-11-28</small>
+                </article>
+            </a>
 
-            <article class="note-card" id="wet">
-                <span class="tag">湿实验</span>
-                <h3>植物逆境分子生物学：ABA 信号通路总结</h3>
-                <p>整理了本科选修课中关于干旱胁迫下 SnRK2 激酶的激活机制。</p>
-                <small>2026-01-14</small>
-            </article>
+            <a href="#">
+                <article class="note-card">
+                    <span class="tag"><i class="fas fa-flask"></i> 湿实验</span>
+                    <h3>植物逆境分子生物学：ABA 信号通路总结</h3>
+                    <p>整理了本科选修课中关于干旱胁迫下 SnRK2 激酶的激活机制。</p>
+                    <small>2026-01-14</small>
+                </article>
+            </a>
         </section>
     </div>
 
