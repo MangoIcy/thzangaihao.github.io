@@ -4,317 +4,124 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>干实验索引 - 海钊知识港</title>
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-        <style>
-            /* --- 基础变量 (与首页保持一致) --- */
-            :root { --primary-color: #2c3e50; --accent-color: #3498db; --primary-bg: #f8f9fa; --sidebar-bg: #ffffff; --text-main: #2c3e50; }
-            * { box-sizing: border-box; }
-            body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--primary-bg); color: var(--text-main); margin: 0; line-height: 1.6; }
-            a { text-decoration: none; color: inherit; }
-
-            /* --- 导航栏 (标准化) --- */
-            nav { 
-                background: var(--primary-color); 
-                color: white; 
-                padding: 1rem 2rem; 
-                display: flex; 
-                justify-content: space-between; 
-                align-items: center; 
-                position: sticky; top: 0; z-index: 1000; 
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                line-height: 1.5; /* 统一高度 */
-            }
-            nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; }
-            nav .nav-links a { color: rgba(255,255,255,0.9); margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
-            nav .nav-links a:hover { color: var(--accent-color); }
-            nav .nav-links i { margin-right: 5px; }
-            /* 当前页面/高亮状态 (重点) */
-            nav .nav-links a.active { 
-                color: var(--accent-color) !important; /* 强制使用强调色 */
-                font-weight: bold; 
-            }
-
-            /* --- 布局 --- */
-            .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; min-height: 80vh; }
-            .left-col { flex: 1; min-width: 250px; }
-            .right-col { flex: 3; }
-
-            /* --- 侧边菜单 (集合列表) --- */
-            .collection-menu { background: var(--sidebar-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 100px; }
-            .collection-menu h3 { margin-top: 0; font-size: 1.1rem; color: #666; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-            
-            .collection-btn { display: block; width: 100%; text-align: left; padding: 10px 15px; margin-bottom: 5px; border: none; background: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; color: var(--text-main); transition: 0.2s; }
-            .collection-btn:hover { background: #f0f7ff; color: var(--accent-color); }
-            .collection-btn.active { background: var(--accent-color); color: white; }
-            .collection-btn i { margin-right: 8px; width: 20px; text-align: center; }
-
-            /* --- 文章列表区域 --- */
-            .article-list { display: none; animation: fadeIn 0.3s ease; }
-            .article-list.active { display: block; }
-            .list-header { margin-bottom: 1.5rem; border-left: 5px solid var(--accent-color); padding-left: 1rem; }
-            .list-header h2 { margin: 0; font-size: 1.8rem; }
-            .list-header p { color: #666; margin: 5px 0 0 0; }
-
-            .article-item { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; display: flex; justify-content: space-between; align-items: center; }
-            .article-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 3px solid var(--accent-color); }
-            .article-info h4 { margin: 0 0 5px 0; font-size: 1.1rem; }
-            .article-info p { margin: 0; font-size: 0.85rem; color: #888; }
-            .article-date { font-size: 0.8rem; color: #aaa; white-space: nowrap; margin-left: 1rem; }
-
-            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-            @media (max-width: 768px) { 
-                .container { flex-direction: column; } 
-                .collection-menu { position: static; margin-bottom: 2rem;} 
-                nav { flex-direction: column; padding: 1rem; }
-                nav .nav-links { margin-top: 1rem; }
-            }
-
-            /* --- 本地图标样式 --- */
-            /* --- 集合按钮布局 --- */
-            .collection-btn {
-                display: flex;
-                align-items: center;
-                width: 100%;
-                text-align: left;
-                padding: 10px 15px;
-                margin-bottom: 5px;
-                border: none;
-                background: none; /* 默认背景透明 */
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 0.95rem;
-                color: var(--text-main);
-                transition: all 0.2s; /* 让背景色和文字颜色过渡平滑 */
-            }
-
-            /* --- 图标容器 (代替 img 标签) --- */
-            .btn-icon {
-                display: inline-block;
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
-                
-                /* 核心：设置背景图，默认使用 --icon-default 变量 */
-                background-image: var(--icon-default);
-                background-size: contain;
-                background-repeat: no-repeat;
-                background-position: center;
-                transition: background-image 0.2s; /* 图标切换时的过渡 */
-            }
-
-            /* --- 状态 1: 鼠标悬浮 (Hover) --- */
-            .collection-btn:hover {
-                background: #f0f7ff;
-                color: var(--accent-color);
-            }
-            /* 悬浮时，将图标背景切换为 --icon-hover */
-            .collection-btn:hover .btn-icon {
-                background-image: var(--icon-hover);
-            }
-
-            /* --- 状态 2: 激活/点击状态 (Active) --- */
-            .collection-btn.active {
-                background: var(--accent-color);
-                color: white;
-            }
-            /* 激活时，将图标背景切换为 --icon-active */
-            .collection-btn.active .btn-icon {
-                background-image: var(--icon-active);
-            }
-        </style>
-
-        <script> window.MathJax = { tex: { inlineMath: [['$', '$']] } }; </script>
-        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-        <script>
-            // 页面加载时自动检查 URL 哈希 (核心修改)
-            window.addEventListener('DOMContentLoaded', () => {
-                // 获取 URL 中的哈希值 (去掉 # 号)，例如 "data"
-                const hash = window.location.hash.substring(1);
-                
-                if (hash) {
-                    // 找到对应的按钮 (假设按钮的 onclick 里包含了这个 id)
-                    // 这里我们通过查找 onclick 属性中包含此 id 的按钮来定位
-                    const targetBtn = document.querySelector(`button[onclick*="'${hash}'"]`);
-                    
-                    if (targetBtn) {
-                        // 如果找到了对应哈希的按钮，就模拟点击它
-                        showCollection(hash, targetBtn);
-                    }
-                }
-            });
-        </script>
-        <script>
-            // --- 强制图片预加载函数 ---
-            function preloadButtonImages() {
-                // 1. 找到所有带有 collection-btn 类的按钮
-                const btns = document.querySelectorAll('.collection-btn');
-                
-                console.log(`开始预加载 ${btns.length} 个按钮的图标...`);
-
-                btns.forEach(btn => {
-                    // 2. 获取该按钮 style 属性里定义的所有内容
-                    const style = btn.getAttribute('style');
-                    if (!style) return;
-
-                    // 3. 使用正则表达式提取 url('...') 里的路径
-                    // 这个正则会匹配 style 里所有的 url(...)
-                    const matches = style.match(/url\(['"]?([^'"]+)['"]?\)/g);
-
-                    if (matches) {
-                        matches.forEach(urlFunc => {
-                            // 4. 清理字符串，只保留路径部分 (去掉 url( 和 括号引号)
-                            const src = urlFunc.replace(/url\(['"]?|['"]?\)/g, '');
-                            
-                            // 5. 核心步骤：创建一个游离的 Image 对象
-                            // 浏览器一看到这行代码，就会立即去下载图片并存入缓存
-                            // 但因为它没有被添加到 DOM 树里，所以用户看不见
-                            const img = new Image();
-                            img.src = src;
-                        });
-                    }
-                });
-            }
-
-            // --- 执行 ---
-            // 监听页面加载完成事件，一旦加载完就立刻开始预下载
-            window.addEventListener('DOMContentLoaded', () => {
-                // 1. 原有的哈希跳转逻辑 (如果有的话)
-                const hash = window.location.hash.substring(1);
-                if (hash) {
-                    const targetBtn = document.querySelector(`button[onclick*="'${hash}'"]`);
-                    if (targetBtn) showCollection(hash, targetBtn);
-                }
-
-                // 2. 执行预加载
-                preloadButtonImages();
-            });
-        </script>
-        <script>
-            function showCollection(collectionId, btnElement) {
-                const lists = document.querySelectorAll('.article-list');
-                lists.forEach(list => list.classList.remove('active'));
-                document.getElementById(collectionId).classList.add('active');
-                const btns = document.querySelectorAll('.collection-btn');
-                btns.forEach(btn => btn.classList.remove('active'));
-                btnElement.classList.add('active');
-            }
-        </script>
+        <link rel="stylesheet" href="../../css/category-index.css">
+        <script src="../../js/main.js"></script>
     </head>
-<body>
-    <nav>
-        <div class="logo"><a href="../../index.html">海钊知识港</a></div>
-        <div class="nav-links">
-            <a href="../wet_lab/wet_lab_index.html"><i class="fas fa-flask"></i> 湿实验</a>
-            <a href="#" class="active"><i class="fas fa-code"></i> 干实验</a>
-            <a href="../resources/resources_index.html"><i class="fas fa-book"></i> 资源站</a>
-            <a href="../about/about_index.html"><i class="fas fa-user"></i> 关于我</a>
-        </div>
-    </nav>
 
-    <div class="container">
-        <aside class="left-col">
-            <div class="collection-menu">
-                <h3><i class="fas fa-folder"></i> 集合列表</h3>
-                <button class="collection-btn active" onclick="showCollection('rnaseq', this)">
-                    <i class="fa-sharp-duotone fa-solid fa-dna"></i> 转录组分析（RNA-seq）
-                </button>
+    <body>
+        <nav>
+            <div class="logo"><a href="../../index.html">海钊知识港</a></div>
+            <div class="nav-links">
+                <a href="../wet_lab/wet_lab_index.html"><i class="fas fa-flask"></i> 湿实验</a>
+                <a href="#" class="active"><i class="fas fa-code"></i> 干实验</a>
+                <a href="../resources/resources_index.html"><i class="fas fa-book"></i> 资源站</a>
+                <a href="../about/about_index.html"><i class="fas fa-user"></i> 关于我</a>
+            </div>
+        </nav>
 
-                <button class="collection-btn" onclick="showCollection('docking', this)">
-                    <i class="fas fa-project-diagram"></i> 分子对接 (Docking)
-                </button>
+        <div class="container">
+            <aside class="left-col">
+                <div class="collection-menu">
+                    <h3><i class="fas fa-folder"></i> 集合列表</h3>
+                    <button class="collection-btn active" onclick="showCollection('rnaseq', this)">
+                        <i class="fa-sharp-duotone fa-solid fa-dna"></i> 转录组分析（RNA-seq）
+                    </button>
 
-                <button class="collection-btn" onclick="showCollection('linux', this)">
-                    <i class="fab fa-linux"></i> Linux 与 脚本
-                </button>
+                    <button class="collection-btn" onclick="showCollection('docking', this)">
+                        <i class="fas fa-project-diagram"></i> 分子对接 (Docking)
+                    </button>
 
-                <button class="collection-btn" onclick="showCollection('alphafold', this)"
-                style="--icon-default: url('../../img/icons/alphafold_0.png'); 
-                       --icon-hover:   url('../../img/icons/alphafold_1.png'); 
-                       --icon-active:  url('../../img/icons/alphafold_2.png');">
+                    <button class="collection-btn" onclick="showCollection('linux', this)">
+                        <i class="fab fa-linux"></i> Linux 与 脚本
+                    </button>
+
+                    <button class="collection-btn" onclick="showCollection('alphafold', this)"
+                    style="--icon-default: url('../../img/icons/alphafold_0.png'); 
+                        --icon-hover:   url('../../img/icons/alphafold_1.png'); 
+                        --icon-active:  url('../../img/icons/alphafold_2.png');">
+                    
+                    <span class="btn-icon"></span>
+                    AlphaFold 预测
+                    </button>
+
+                    <button class="collection-btn" onclick="showCollection('data', this)">
+                        <i class="fas fa-database"></i> 数据挖掘
+                    </button>
+
+                </div>
+            </aside>
+
+            <section class="right-col">
+                <div id="rnaseq" class="article-list active">
+                    <div class="list-header">
+                        <h2>转录组分析</h2>
+                        <p>通过信使RNA含量去量化评估一个基因的表达程度。</p>
+                    </div>
+                    <a href="rnaseq/enrichment_analysis/enrichment_analysis.html" class="article-item">
+                        <div class="article-info">
+                            <h4>01. 转录组分析系列：富集分析 (Enrichment Analysis)</h4>
+                            <p>了解改变的基因具体影响了哪些生物学功能</p>
+                        </div>
+                        <span class="article-date">2025-11-25</span>
+                    </a>
+                </div>
+
+                <div id="docking" class="article-list">
+                    <div class="list-header">
+                        <h2>分子对接实战</h2>
+                        <p>包含 AutoDock Vina、LeDock 等软件的使用流程与参数详解。</p>
+                    </div>
+                    <a href="#" class="article-item">
+                        <div class="article-info">
+                            <h4>01. AutoDock Vina 安装与环境配置</h4>
+                            <p>Linux 下的编译安装及 MGLTools 的准备工作。</p>
+                        </div>
+                        <span class="article-date">2026-01-10</span>
+                    </a>
+                </div>
+
+                <div id="linux" class="article-list">
+                    <div class="list-header">
+                        <h2>Linux 运维与脚本</h2>
+                        <p>常用 Shell 命令备忘及 Python 生信脚本整理。</p>
+                    </div>
+                    <a href="#" class="article-item">
+                        <div class="article-info">
+                            <h4>chmod 与 chown：彻底搞懂 Linux 权限</h4>
+                            <p>解决 "Permission denied" 的终极指南。</p>
+                        </div>
+                        <span class="article-date">2026-01-08</span>
+                    </a>
+                </div>
                 
-                <span class="btn-icon"></span>
-                AlphaFold 预测
-                </button>
-
-                <button class="collection-btn" onclick="showCollection('data', this)">
-                    <i class="fas fa-database"></i> 数据挖掘
-                </button>
-
-            </div>
-        </aside>
-
-        <section class="right-col">
-            <div id="rnaseq" class="article-list active">
-                <div class="list-header">
-                    <h2>转录组分析</h2>
-                    <p>通过信使RNA含量去量化评估一个基因的表达程度。</p>
-                </div>
-                <a href="rnaseq/enrichment_analysis/enrichment_analysis.html" class="article-item">
-                    <div class="article-info">
-                        <h4>01. 转录组分析系列：富集分析 (Enrichment Analysis)</h4>
-                        <p>了解改变的基因具体影响了哪些生物学功能</p>
+                <div id="alphafold" class="article-list">
+                    <div class="list-header">
+                        <h2>AlphaFold 结构预测</h2>
+                        <p>AlphaFold在线版本/离线版本区别与使用指南。</p>
                     </div>
-                    <span class="article-date">2025-11-25</span>
-                </a>
-            </div>
-
-            <div id="docking" class="article-list">
-                <div class="list-header">
-                    <h2>分子对接实战</h2>
-                    <p>包含 AutoDock Vina、LeDock 等软件的使用流程与参数详解。</p>
-                </div>
-                <a href="#" class="article-item">
-                    <div class="article-info">
-                        <h4>01. AutoDock Vina 安装与环境配置</h4>
-                        <p>Linux 下的编译安装及 MGLTools 的准备工作。</p>
+                    <div style="padding: 2rem; text-align: center; color: #999;">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>笔记整理中...</p>
                     </div>
-                    <span class="article-date">2026-01-10</span>
-                </a>
-            </div>
+                </div>
 
-            <div id="linux" class="article-list">
-                <div class="list-header">
-                    <h2>Linux 运维与脚本</h2>
-                    <p>常用 Shell 命令备忘及 Python 生信脚本整理。</p>
-                </div>
-                <a href="#" class="article-item">
-                    <div class="article-info">
-                        <h4>chmod 与 chown：彻底搞懂 Linux 权限</h4>
-                        <p>解决 "Permission denied" 的终极指南。</p>
+                <div id="data" class="article-list">
+                    <div class="list-header">
+                        <h2>数据挖掘</h2>
+                        <p>常用基因组数据挖掘方法原理。</p>
                     </div>
-                    <span class="article-date">2026-01-08</span>
-                </a>
-            </div>
-            
-            <div id="alphafold" class="article-list">
-                <div class="list-header">
-                    <h2>AlphaFold 结构预测</h2>
-                    <p>AlphaFold在线版本/离线版本区别与使用指南。</p>
+                    <a href="data/01. GWAS/GWAS.html" class="article-item">
+                        <div class="article-info">
+                            <h4>01. GWAS：全基因组关联分析</h4>
+                            <p>如何通过你的基因来判断你是否喜欢吃香菜？</p>
+                        </div>
+                        <span class="article-date">2026-01-08</span>
+                    </a>
                 </div>
-                <div style="padding: 2rem; text-align: center; color: #999;">
-                    <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                    <p>笔记整理中...</p>
-                </div>
-            </div>
-
-            <div id="data" class="article-list">
-                <div class="list-header">
-                    <h2>数据挖掘</h2>
-                    <p>常用基因组数据挖掘方法原理。</p>
-                </div>
-                <a href="data/01. GWAS/GWAS.html" class="article-item">
-                    <div class="article-info">
-                        <h4>01. GWAS：全基因组关联分析</h4>
-                        <p>如何通过你的基因来判断你是否喜欢吃香菜？</p>
-                    </div>
-                    <span class="article-date">2026-01-08</span>
-                </a>
-            </div>
-        </section>
-    </div>
-    <footer style="text-align: center; padding: 2rem; color: #7f8c8d;">
-        &copy; 2026 海钊.
-    </footer>
-</body>
+            </section>
+        </div>
+        <div id="footer-placeholder"></div>
+    </body>
 </html>

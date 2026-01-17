@@ -13,7 +13,14 @@
             };
         </script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
+        <script>
+            fetch('./footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
+                });
+        </script>
+
         <style>
             /* --- 全局变量与重置 --- */
             :root {
@@ -52,7 +59,7 @@
             nav .nav-links i { margin-right: 5px; }
     
             /* --- 布局容器 --- */
-            .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; }
+            .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; min-height: 90vh;}
             .left-col { flex: 1; min-width: 320px; }
             .right-col { flex: 3; }
     
@@ -98,76 +105,139 @@
                 nav .nav-links { margin-top: 1rem; flex-wrap: wrap; justify-content: center; gap: 10px; }
                 nav .nav-links a { margin: 0; }
             }
+
+            /* --- 底部 Footer 样式 --- */
+            .site-footer {
+                background: var(--primary-color); /* 与顶栏同色 */
+                color: white;
+                padding: 3rem 0 1rem; /* 上方多留白，下方少留白 */
+                margin-top: 4rem; /* 这里的 margin 确保 footer 不会紧贴正文 */
+                font-size: 0.95rem;
+            }
+
+            .footer-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 2rem;
+                display: flex;
+                justify-content: space-between; /* 左右两栏分开 */
+                flex-wrap: wrap; /* 移动端自动换行 */
+                gap: 2rem;
+            }
+
+            .footer-col {
+                flex: 1; /* 平分宽度 */
+                min-width: 250px;
+            }
+
+            .footer-col h3 {
+                font-size: 1.1rem;
+                border-bottom: 2px solid var(--accent-color); /* 标题下的小蓝线 */
+                padding-bottom: 0.5rem;
+                margin-bottom: 1rem;
+                display: inline-block;
+            }
+
+            .footer-links {
+                display: flex;
+                flex-direction: column; /* 竖向排列链接 */
+                gap: 10px;
+            }
+
+            .footer-links a {
+                color: rgba(255, 255, 255, 0.8);
+                transition: 0.3s;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .footer-links a:hover {
+                color: white;
+                transform: translateX(5px); /* 悬浮时有个小小的位移特效 */
+            }
+            
+            .footer-links i {
+                margin-right: 10px;
+                width: 20px;
+                text-align: center;
+            }
+
+            /* 底部版权条 */
+            .copyright-bar {
+                text-align: center;
+                border-top: 1px solid rgba(255, 255, 255, 0.1); /* 淡淡的分割线 */
+                margin-top: 2rem;
+                padding-top: 1.5rem;
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 0.85rem;
+            }
         </style>
     </head>
 
-<body>
-    <nav>
-        <div class="logo"><a href="index.html">海钊知识港</a></div>
-        <div class="nav-links">
-            <a href="articles/wet_lab/wet_lab_index.html"><i class="fas fa-flask"></i> 湿实验</a>
-            <a href="articles/dry_lab/dry_lab_index.html"><i class="fas fa-code"></i> 干实验</a>
-            <a href="articles/resources/resources_index.html"><i class="fas fa-book"></i> 资源站</a>
-            <a href="articles/about/about_index.html"><i class="fas fa-user"></i> 关于我</a>
-        </div>
-    </nav>
+    <body>
+        <nav>
+            <div class="logo"><a href="index.html">海钊知识港</a></div>
+            <div class="nav-links">
+                <a href="articles/wet_lab/wet_lab_index.html"><i class="fas fa-flask"></i> 湿实验</a>
+                <a href="articles/dry_lab/dry_lab_index.html"><i class="fas fa-code"></i> 干实验</a>
+                <a href="articles/resources/resources_index.html"><i class="fas fa-book"></i> 资源站</a>
+                <a href="articles/about/about_index.html"><i class="fas fa-user"></i> 关于我</a>
+            </div>
+        </nav>
 
-    <div class="container">
-        <aside class="left-col">
-            <div class="profile-card">
-                <img src="img/avatar.jpg" alt="头像" class="avatar">
-                <div class="bio">
-                    <h3>Haizhao Tang</h3>
-                    <p>四川大学 生物科学</p>
-                    <p style="font-size: 0.85rem; color: #666;">干/湿实验笔记整理&思维记录站</p>
+        <div class="container">
+            <aside class="left-col">
+                <div class="profile-card">
+                    <img src="img/avatar.jpg" alt="头像" class="avatar">
+                    <div class="bio">
+                        <h3>Haizhao Tang</h3>
+                        <p>四川大学 生物科学</p>
+                        <p style="font-size: 0.85rem; color: #666;">干/湿实验笔记整理&思维记录站</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="category-card">
-                <h3>栏目入口</h3>
-                <a href="articles/wet_lab/wet_lab_index.html" class="category-item">
-                    <h4><i class="fas fa-flask"></i> 湿实验</h4>
-                    <p>测序原理、载体构建、基因工程</p>
+                <div class="category-card">
+                    <h3>栏目入口</h3>
+                    <a href="articles/wet_lab/wet_lab_index.html" class="category-item">
+                        <h4><i class="fas fa-flask"></i> 湿实验</h4>
+                        <p>测序原理、载体构建、基因工程</p>
+                    </a>
+                    <a href="articles/dry_lab/dry_lab_index.html" class="category-item">
+                        <h4><i class="fas fa-code"></i> 干实验</h4>
+                        <p>分子对接、生信脚本、Linux 配置</p>
+                    </a>
+                    <a href="articles/resources/resources_index.html" class="category-item">
+                        <h4><i class="fas fa-book"></i> 资源站</h4>
+                        <p>工具链接、复用管线</p>
+                    </a>
+                    <a href="articles/about/about_index.html" class="category-item">
+                        <h4><i class="fas fa-user"></i> 关于我</h4>
+                        <p>了解我的研究兴趣与技能</p>
+                    </a>
+                </div>
+            </aside>
+
+            <section class="right-col">
+                <a href="articles/dry_lab/rnaseq/enrichment_analysis/enrichment_analysis.html">
+                    <article class="note-card">
+                        <span class="tag"><i class="fas fa-code"></i> 干实验</span>
+                        <h3>富集分析与超几何分布</h3>
+                        <p>如何实现一张纸，一只笔，手动计算富集。</p>
+                        <small>2025-11-25</small>
+                    </article>
                 </a>
-                <a href="articles/dry_lab/dry_lab_index.html" class="category-item">
-                    <h4><i class="fas fa-code"></i> 干实验</h4>
-                    <p>分子对接、生信脚本、Linux 配置</p>
+
+                <a href="articles/dry_lab/data/01. GWAS/GWAS.html">
+                    <article class="note-card">
+                        <span class="tag"><i class="fas fa-code"></i> 干实验</span>
+                        <h3>GWAS：全基因组关联分析</h3>
+                        <p>如何通过你的基因来判断你是否喜欢吃香菜？</p>
+                        <small>2025-11-28</small>
+                    </article>
                 </a>
-                <a href="articles/resources/resources_index.html" class="category-item">
-                    <h4><i class="fas fa-book"></i> 资源站</h4>
-                    <p>工具链接、复用管线</p>
-                </a>
-                <a href="articles/about/about_index.html" class="category-item">
-                    <h4><i class="fas fa-user"></i> 关于我</h4>
-                    <p>了解我的研究兴趣与技能</p>
-                </a>
-            </div>
-        </aside>
+            </section>
+        </div>
+        <div id="footer-placeholder"></div>
 
-        <section class="right-col">
-            <a href="articles/dry_lab/rnaseq/enrichment_analysis/enrichment_analysis.html">
-                <article class="note-card">
-                    <span class="tag"><i class="fas fa-code"></i> 干实验</span>
-                    <h3>富集分析与超几何分布</h3>
-                    <p>如何实现一张纸，一只笔，手动计算富集。</p>
-                    <small>2025-11-25</small>
-                </article>
-            </a>
-
-            <a href="articles/dry_lab/data/01. GWAS/GWAS.html">
-                <article class="note-card">
-                    <span class="tag"><i class="fas fa-code"></i> 干实验</span>
-                    <h3>GWAS：全基因组关联分析</h3>
-                    <p>如何通过你的基因来判断你是否喜欢吃香菜？</p>
-                    <small>2025-11-28</small>
-                </article>
-            </a>
-        </section>
-    </div>
-
-    <footer style="text-align: center; padding: 2rem; color: #7f8c8d;">
-        &copy; 2026 海钊.
-    </footer>
-
-</body>
+    </body>
 </html>
