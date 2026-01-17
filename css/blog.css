@@ -68,12 +68,37 @@ code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: C
 pre { background: #2c3e50; color: #ecf0f1; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-family: Consolas, monospace; line-height: 1.5; margin: 1.5rem 0; }
 pre code { background: none; color: inherit; padding: 0; color: #ecf0f1; }
 
-/* --- 移动端 --- */
-@media (max-width: 850px) {
-    .article-container { margin: 1rem; padding: 1.5rem; }
+/* --- 移动端响应式 --- */
+@media (max-width: 850px) { /* 建议统一把断点改为 850px，适配平板竖屏 */
+    
+    .container { flex-direction: column; } 
+    .collection-menu { position: static; margin-bottom: 2rem;} 
+    
+    /* --- 导航栏修复开始 --- */
     nav { flex-direction: column; padding: 1rem; }
-    nav .nav-links { margin-top: 1rem; }
-    h1 { font-size: 1.6rem; }
+    
+    nav .nav-links { 
+        margin-top: 1rem; 
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;   /* 允许换行 */
+        justify-content: center; 
+        gap: 10px;
+    }
+    
+    nav .nav-links a { 
+        margin-left: 0;
+        flex: 0 0 45%;     /* 2x2 布局 */
+        text-align: center;
+        white-space: nowrap; /* 禁止文字换行 */
+        
+        /* 手机端按钮样式优化 */
+        padding: 8px 0;
+        background: rgba(255,255,255,0.1);
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+    /* --- 导航栏修复结束 --- */
 }
 
 /* --- MathJax 公式移动端优化 --- */

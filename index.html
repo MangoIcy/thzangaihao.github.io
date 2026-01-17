@@ -51,12 +51,17 @@
                 align-items: center; 
                 position: sticky; top: 0; z-index: 1000; 
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                line-height: 1.5; /* 核心修复：统一高度 */
+                line-height: 1.5; /* 统一高度 */
             }
             nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; }
             nav .nav-links a { color: rgba(255,255,255,0.9); margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
             nav .nav-links a:hover { color: var(--accent-color); }
             nav .nav-links i { margin-right: 5px; }
+            /* 当前页面/高亮状态 (重点) */
+            nav .nav-links a.active { 
+                color: var(--accent-color) !important; /* 强制使用强调色 */
+                font-weight: bold; 
+            }
     
             /* --- 布局容器 --- */
             .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; min-height: 90vh;}
@@ -100,10 +105,35 @@
     
             /* --- 响应式 --- */
             @media (max-width: 850px) {
+                /* 1. 容器变竖排 */
                 .container { flex-direction: column; }
+                
+                /* 2. 导航栏整体布局 */
                 nav { flex-direction: column; padding: 1rem; }
-                nav .nav-links { margin-top: 1rem; flex-wrap: wrap; justify-content: center; gap: 10px; }
-                nav .nav-links a { margin: 0; }
+                
+                /* 3. 链接区域：改为 2x2 网格 */
+                nav .nav-links { 
+                    margin-top: 1rem; 
+                    width: 100%;       /* 占满屏幕宽度 */
+                    display: flex;     /* 弹性盒子 */
+                    flex-wrap: wrap;   /* 允许换行 */
+                    justify-content: center; 
+                    gap: 10px;         /* 按钮之间的间距 */
+                }
+                
+                /* 4. 单个链接按钮样式 */
+                nav .nav-links a { 
+                    margin: 0;            /* 清除桌面端的左边距 */
+                    flex: 0 0 45%;        /* 核心：强制每个按钮占 45% 宽度，自动形成 2行2列 */
+                    text-align: center;   /* 文字居中 */
+                    white-space: nowrap;  /* 核心修复：强制文字不换行 */
+                    
+                    /* 增加一点视觉优化，让它在手机上更好点 */
+                    padding: 8px 0;       
+                    background: rgba(255,255,255,0.1); 
+                    border-radius: 6px;
+                    font-size: 0.9rem;
+                }
             }
 
             /* --- 底部 Footer 样式 --- */
