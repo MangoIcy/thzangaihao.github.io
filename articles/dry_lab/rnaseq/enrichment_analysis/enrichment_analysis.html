@@ -3,207 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>富集分析笔记 - 海钊知识港</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>富集分析 - 海钊知识港</title>
     
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --primary-bg: #f8f9fa;
-            --text-main: #2c3e50;
-            --border-color: #eee;
-        }
-
-        /* 全局布局与换行优化 */
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background: var(--primary-bg);
-            color: var(--text-main);
-            line-height: 1.7;
-            margin: 0;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        /* 顶栏：支持移动端自动换行 */
-        nav {
-            background: var(--primary-color);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        nav .logo a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.5rem;
-            white-space: nowrap;
-        }
-
-        nav .nav-links {
-            display: flex;
-            flex-wrap: wrap; /* 空间不足时自动换行 */
-            justify-content: flex-end;
-            gap: 15px;
-        }
-
-        nav .nav-links a {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: 0.3s;
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
-
-        nav .nav-links a:hover { color: white; }
-        nav .nav-links i { margin-right: 5px; }
-        nav .nav-links a.active {
-            color: var(--accent-color);
-            font-weight: bold;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 5px;
-        }
-
-        /* 文章容器 */
-        .article-container {
-            max-width: 900px;
-            margin: 3rem auto;
-            background: white;
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 2rem;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .back-link:hover { color: var(--accent-color); }
-
-        h1 {
-            color: var(--primary-color);
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-
-        .meta {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 1rem;
-        }
-
-        /* 正文内容样式 */
-        .content h2 {
-            border-left: 5px solid var(--accent-color);
-            padding-left: 15px;
-            margin: 2.5rem 0 1.2rem;
-            line-height: 1.4;
-        }
-
-        .content p { margin-bottom: 1.2rem; }
-
-        .content img {
-            display: block;      /* 让图片转为块级元素，方便居中 */
-            max-width: 100%;    /* 确保图片宽度不会超过屏幕 */
-            height: auto;       /* 保持原图比例 */
-            margin: 2rem auto;  /* 上下留白，左右自动居中 */
-            border-radius: 8px; /* 添加圆角 */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* 添加阴影，增加立体感 */
-        }
-        /* 模拟 Markdown 引用块的衬底效果 */
-        blockquote {
-            margin: 1.5rem 0;
-            padding: 1.2rem 1.5rem;
-            background-color: #f1f8ff; /* 浅蓝色衬底 */
-            color: #444;
-            font-style: normal;
-            /* 核心：确保长内容换行 */
-            display: block;
-            white-space: normal;
-            word-break: break-word;
-        }
-
-        blockquote p {
-            margin: 0;
-            line-height: 1.8;
-            text-indent: 0 !important;
-        }
-
-        /* 代码与预格式化块优化 */
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            color: #e74c3c;
-            word-break: break-all;
-        }
-
-        pre {
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1.5rem 0;
-            /* 核心：代码自动换行，防止撑破容器 */
-            white-space: pre-wrap; 
-            word-wrap: break-word;
-            overflow-x: hidden;
-        }
-
-        pre code {
-            background: transparent;
-            color: inherit;
-            padding: 0;
-        }
-
-        /* 移动端特殊适配 */
-        @media (max-width: 850px) {
-            .article-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-            nav {
-                flex-direction: column;
-                padding: 1rem;
-            }
-            nav .nav-links {
-                margin-top: 1rem;
-                justify-content: center;
-                width: 100%;
-            }
-            h1 { font-size: 1.6rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <script>
         window.MathJax = {
             tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']], // 显式开启单美元符号支持
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']]
             }
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        /* --- 基础变量 --- */
+        :root { --primary-color: #2c3e50; --accent-color: #3498db; --primary-bg: #f8f9fa; --text-main: #2c3e50; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background: var(--primary-bg); color: var(--text-main); 
+            line-height: 1.8; /* 文章页行高稍微大一点，利于阅读 */
+            margin: 0; 
+            word-wrap: break-word; /* 防止长单词撑破 */
+        }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- 导航栏 (标准化) --- */
+        nav { 
+            background: var(--primary-color); 
+            color: white; 
+            padding: 1rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; top: 0; z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            line-height: 1.5; /* 统一高度 */
+        }
+        nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; }
+        nav .nav-links a { color: rgba(255,255,255,0.9); margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
+        nav .nav-links a:hover { color: var(--accent-color); }
+        nav .nav-links i { margin-right: 5px; }
+        /* 当前页面/高亮状态 (重点) */
+        nav .nav-links a.active { 
+            color: var(--accent-color) !important; /* 强制使用强调色 */
+            font-weight: bold; 
+        }
+
+        /* --- 文章容器 --- */
+        .article-container {
+            max-width: 900px; /* 适宜阅读的宽度 */
+            margin: 3rem auto;
+            background: white;
+            padding: 4rem; /* 宽敞的内边距 */
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        /* --- 顶部信息区 --- */
+        .back-link { display: inline-block; margin-bottom: 2rem; color: #666; font-size: 0.9rem; transition: 0.2s; }
+        .back-link:hover { color: var(--accent-color); transform: translateX(-5px); }
+        
+        h1 { color: var(--primary-color); font-size: 2.2rem; margin-bottom: 0.5rem; line-height: 1.3; }
+        .meta { color: #999; font-size: 0.9rem; margin-bottom: 3rem; border-bottom: 1px solid #eee; padding-bottom: 1.5rem; }
+        .meta span { margin-right: 20px; }
+        .meta i { margin-right: 5px; }
+
+        /* --- 正文排版 --- */
+        .content h2 { border-left: 5px solid var(--accent-color); padding-left: 15px; margin: 3rem 0 1.5rem; font-size: 1.6rem; color: var(--primary-color); }
+        .content h3 { margin: 2rem 0 1rem; color: #34495e; font-size: 1.3rem; }
+        .content p { margin-bottom: 1.2rem; text-align: justify; }
+        
+        /* 图片样式 */
+        .content img { display: block; max-width: 100%; height: auto; margin: 2rem auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* 引用块 */
+        blockquote { margin: 2rem 0; padding: 1rem 1.5rem; background: #f1f8ff; border-left: 4px solid var(--accent-color); color: #555; border-radius: 0 8px 8px 0; }
+        blockquote p { margin: 0; }
+        
+        /* 代码块优化 */
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: Consolas, Monaco, monospace; color: #e74c3c; font-size: 0.9em; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-family: Consolas, monospace; line-height: 1.5; margin: 1.5rem 0; }
+        pre code { background: none; color: inherit; padding: 0; color: #ecf0f1; }
+
+        /* --- 移动端 --- */
+        @media (max-width: 850px) {
+            .article-container { margin: 1rem; padding: 1.5rem; }
+            nav { flex-direction: column; padding: 1rem; }
+            nav .nav-links { margin-top: 1rem; }
+            h1 { font-size: 1.6rem; }
+        }
+
+        /* --- MathJax 公式移动端优化 --- */
+        mjx-container[display="true"] {
+            overflow-x: auto;       /* 超出宽度时显示横向滚动条 */
+            overflow-y: hidden;     /* 隐藏纵向滚动条 */
+            max-width: 100%;        /* 限制最大宽度不超过父容器 */
+            padding: 10px 0;        /* 增加上下内边距，防止滚动条遮挡公式底部 */
+            -webkit-overflow-scrolling: touch; /* 让 iOS 滚动更顺滑 */
+        }
+    </style>
 </head>
 <body>
-
     <nav>
         <div class="logo"><a href="../../../../index.html">海钊知识港</a></div>
         <div class="nav-links">
@@ -217,12 +120,12 @@
     </nav>
 
     <div class="article-container">
-        <a href="../../dry_lab_index.html" class="back-link"><i class="fas fa-arrow-left"></i> 返回 干实验 / 转录组分析</a>
+        <a href="../../dry_lab_index.html#rnaseq" class="back-link"><i class="fas fa-arrow-left"></i> 返回 干实验 / 转录组分析</a>
 
-        <h1>转录组分析系列：富集分析 (Enrichment Analysis)</h1>
+        <h1>转录组分析系列：富集分析</h1>
         <div class="meta">
-            <span><i class="far fa-calendar"></i> 2025-11-28</span>
-            <span style="margin-left: 20px;"><i class="fas fa-folder"></i> RNA-seq</span>
+            <span><i class="far fa-calendar"></i> 2025-11-25</span>
+            <span style="margin-left: 20px;"><i class="fas fa-folder"></i> 转录组分析（RNA-seq）</span>
         </div>
 
         <div class="content">
@@ -442,6 +345,8 @@
                 </ul>
         </div>
     </div>
-
+    <footer style="text-align: center; padding: 2rem; color: #7f8c8d;">
+        &copy; 2026 海钊.
+    </footer>
 </body>
 </html>

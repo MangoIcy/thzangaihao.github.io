@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GWAS - 海钊知识港</title>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
+        <script>
+            window.MathJax = {
+                tex: {
+                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+                }
+            };
+        </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        
+        <style>
+            /* --- 基础变量 --- */
+            :root { --primary-color: #2c3e50; --accent-color: #3498db; --primary-bg: #f8f9fa; --text-main: #2c3e50; }
+            * { box-sizing: border-box; }
+            body { 
+                font-family: 'Helvetica Neue', Arial, sans-serif; 
+                background: var(--primary-bg); color: var(--text-main); 
+                line-height: 1.8; /* 文章页行高稍微大一点，利于阅读 */
+                margin: 0; 
+                word-wrap: break-word; /* 防止长单词撑破 */
+            }
+            a { text-decoration: none; color: inherit; }
+
+            /* --- 导航栏 (标准化) --- */
+            nav { 
+                background: var(--primary-color); 
+                color: white; 
+                padding: 1rem 2rem; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                position: sticky; top: 0; z-index: 1000; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                line-height: 1.5; /* 统一高度 */
+            }
+            nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; }
+            nav .nav-links a { color: rgba(255,255,255,0.9); margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
+            nav .nav-links a:hover { color: var(--accent-color); }
+            nav .nav-links i { margin-right: 5px; }
+            /* 当前页面/高亮状态 (重点) */
+            nav .nav-links a.active { 
+                color: var(--accent-color) !important; /* 强制使用强调色 */
+                font-weight: bold; 
+            }
+
+            /* --- 文章容器 --- */
+            .article-container {
+                max-width: 900px; /* 适宜阅读的宽度 */
+                margin: 3rem auto;
+                background: white;
+                padding: 4rem; /* 宽敞的内边距 */
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            }
+
+            /* --- 顶部信息区 --- */
+            .back-link { display: inline-block; margin-bottom: 2rem; color: #666; font-size: 0.9rem; transition: 0.2s; }
+            .back-link:hover { color: var(--accent-color); transform: translateX(-5px); }
+            
+            h1 { color: var(--primary-color); font-size: 2.2rem; margin-bottom: 0.5rem; line-height: 1.3; }
+            .meta { color: #999; font-size: 0.9rem; margin-bottom: 3rem; border-bottom: 1px solid #eee; padding-bottom: 1.5rem; }
+            .meta span { margin-right: 20px; }
+            .meta i { margin-right: 5px; }
+
+            /* --- 正文排版 --- */
+            .content h2 { border-left: 5px solid var(--accent-color); padding-left: 15px; margin: 3rem 0 1.5rem; font-size: 1.6rem; color: var(--primary-color); }
+            .content h3 { margin: 2rem 0 1rem; color: #34495e; font-size: 1.3rem; }
+            .content p { margin-bottom: 1.2rem; text-align: justify; }
+            
+            /* 图片样式 */
+            .content img { display: block; max-width: 100%; height: auto; margin: 2rem auto; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            
+            /* 引用块 */
+            blockquote { margin: 2rem 0; padding: 1rem 1.5rem; background: #f1f8ff; border-left: 4px solid var(--accent-color); color: #555; border-radius: 0 8px 8px 0; }
+            blockquote p { margin: 0; }
+            
+            /* 代码块优化 */
+            code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: Consolas, Monaco, monospace; color: #e74c3c; font-size: 0.9em; }
+            pre { background: #2c3e50; color: #ecf0f1; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-family: Consolas, monospace; line-height: 1.5; margin: 1.5rem 0; }
+            pre code { background: none; color: inherit; padding: 0; color: #ecf0f1; }
+
+            /* --- 移动端 --- */
+            @media (max-width: 850px) {
+                .article-container { margin: 1rem; padding: 1.5rem; }
+                nav { flex-direction: column; padding: 1rem; }
+                nav .nav-links { margin-top: 1rem; }
+                h1 { font-size: 1.6rem; }
+            }
+
+            /* --- MathJax 公式移动端优化 --- */
+            mjx-container[display="true"] {
+                overflow-x: auto;       /* 超出宽度时显示横向滚动条 */
+                overflow-y: hidden;     /* 隐藏纵向滚动条 */
+                max-width: 100%;        /* 限制最大宽度不超过父容器 */
+                padding: 10px 0;        /* 增加上下内边距，防止滚动条遮挡公式底部 */
+                -webkit-overflow-scrolling: touch; /* 让 iOS 滚动更顺滑 */
+            }
+
+            /* --- 表格样式优化 --- */
+            .content table {
+                width: 100%;             /* 宽度占满容器 */
+                border-collapse: collapse; /* 合并边框 */
+                margin: 2rem 0;          /* 上下留白 */
+                font-size: 0.95rem;      /* 字体稍微小一点点 */
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* 轻微阴影 */
+                overflow: hidden;        /* 圆角溢出隐藏 */
+                border-radius: 8px;      /* 表格圆角 */
+            }
+
+            .content th {
+                background-color: var(--primary-color); /* 表头背景色：深蓝 */
+                color: white;            /* 表头文字：白色 */
+                padding: 12px 15px;      /* 内边距 */
+                text-align: left;        /* 默认左对齐 */
+                font-weight: 600;
+            }
+
+            .content td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #eee; /* 单元格底部分割线 */
+                color: #555;
+            }
+
+            /* 斑马纹效果：偶数行背景变灰，利于阅读长表格 */
+            .content tr:nth-of-type(even) {
+                background-color: #f9f9f9;
+            }
+
+            /* 鼠标悬停高亮当前行 */
+            .content tr:hover {
+                background-color: #f1f7ff;
+                transition: background-color 0.2s;
+            }
+
+            /* 移动端适配：如果表格太宽，允许横向滚动 */
+            @media (max-width: 600px) {
+                .content table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <div class="logo"><a href="../../../../index.html">海钊知识港</a></div>
+            <div class="nav-links">
+                <a href="../../../wet_lab/wet_lab_index.html"><i class="fas fa-flask"></i> 湿实验</a>
+                <a href="../dry_lab/dry_lab_index.html"><i class="fas fa-code"></i> 干实验</a>
+                <!-- <a href="../../dry_lab_index.html" class="active"><i class="fas fa-code"></i> 干实验</a> -->
+                <a href="../../../resources/resources_index.html"><i class="fas fa-book"></i> 资源站</a>
+                <a href="../../../about/about_index.html"><i class="fas fa-user"></i> 关于我</a>
+            </div>
+        </nav>
+
+        <div class="article-container">
+            <a href="../../dry_lab_index.html#data" class="back-link"><i class="fas fa-arrow-left"></i> 返回 干实验 / 数据挖掘</a>
+
+            <h1>GWAS：全基因组关联分析</h1>
+            <div class="meta">
+                <span><i class="far fa-calendar"></i> 2025-11-28</span>
+                <span style="margin-left: 20px;"><i class="fas fa-folder"></i> 数据挖掘</span>
+            </div>
+            <div class="content">
+                <h2>1. 我想干什么</h2>
+                    <p>单核苷酸多态性（SNP）广泛存在于生物的基因组，实际上，生物有不少性状都是由于一个SNP（就是基因上有1个碱基对不一样）而发生改变的，比如我们人类耳垢是油性的还是干燥的，就是由你染色体上的一个SNP决定。这样，我就可以得知你的许多信息。</p>
+                <h2>2. 什么是相关性</h2>
+                    <p>相关性就是看两个事件间有没有关系，亦或独立，比如今天的天气好坏和昨天天气好坏就是相关的，而今天天气好坏和我晚上想吃什么就是无关的，或者是是独立的。在这里，我们笼统的用有关系和独立进行描述，但是我问你，男生女生与数学成绩有相关性吗？这种不好说的，我们会经过大量统计，通过数学推导出一个数值，来表示它们有多少相关性，从而将非黑即白的相关性得到了数学语言的精确描述。</p>
+                <h2>3. 全基因组关联分析 GWAS</h2>
+                    <p>全基因组关联分析实际上就是找规律，例如继续以耳垢干与油这个性状为例，我们统计调查了许多人（就假设有1000个人吧），并且得到了这1000个人全基因组上的所有SNP（即单核苷酸多态性，这个1000人其实就是国际千人基因组计划）。现在我们需要对每一个SNP和耳垢干油进行分析，假设：</p>
+                    <h3>3.1 单核苷酸多态性 SNP</h3>
+                        <p>考虑到人是二倍体，理论上一个基因的SNP会有这么多种组合，考虑到两个同源染色体之间没有区分，16种可缩为10种（AT-TA和TA-AT是一样的）。</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>AT</th><th>TA</th><th>CG</th><th>GC</th>
+                                </tr>
+                            </thead>
+                                <tbody><tr>
+                                    <td>AT</td><td>AT-AT</td><td>AT-TA</td><td>AT-CG</td><td>AT-GC</td>
+                                    </tr><tr>
+                                    <td>TA</td><td>TA-AT</td><td>TA-TA</td><td>TA-CG</td><td>TA-GC</td>
+                                    </tr><tr>
+                                    <td>CG</td><td>CG-AT</td><td>CG-TA</td><td>CG-CG</td><td>CG-GC</td>
+                                    </tr><tr>
+                                    <td>GC</td><td>GC-AT</td><td>GC-TA</td><td>GC-CG</td><td>GC-GC</td>
+                                </tr></tbody>
+                        </table>
+                        <p>但实际上，一个SNP就只有两种或者三种基因型组合，例如人类耳垢，决定其不同的SNP位于ABCC11基因上，只有三种状态，分别是TA-TA（干性耳垢），TA-CG和CG-CG（油性耳垢）。</p>
+                    <h3>3.2 简单性状的GWAS分析</h3>
+                        <p>在这里我们先看最简单的性状分析，继续以耳垢的干性和油性举例，并忘掉我们已知的SNP位点，我们测得了1000个人的全部基因组，为了简化例子，我们就假设在一个染色体上发现了5个SNP位点，并且假设这5个SNP都只有两类：TA-TA和CG-CG，我们探究哪个SNP位点与耳垢的干和油相关。</p>
+                        <p>对于第一个SNP位点，我们得到这样的统计：</p>
+                        <table>
+                            <thead>
+                            <tr>
+                            <th></th>
+                            <th>TA-TA</th>
+                            <th>CG-CG</th>
+                            <th>总计($R_i$)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                            <td>干耳垢</td>
+                            <td>$O_{11}=334$</td>
+                            <td>$O_{12}=276$</td>
+                            <td>$R_1=610$</td>
+                            </tr>
+                            <tr>
+                            <td>油耳垢</td>
+                            <td>$O_{21}=124$</td>
+                            <td>$O_{22}=266$</td>
+                            <td>$R_2=390$</td>
+                            </tr>
+                            <tr>
+                            <td>总计($C_j$)</td>
+                            <td>$C_1=458$</td>
+                            <td>$C_2=542$</td>
+                            <td>$T=1000$</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p>这是典型的一个2×2列联表的独立性检验，我们进行卡方检验：</p>
+                        <ol>
+                            <li>确定假设：</li>
+                                <p>
+                                    $H_0$：耳垢干与油和这个SNP没有关系<br>
+                                    $H_1$：耳垢干与油和这个SNP有关系
+                                </p>
+                            <li>确定显著性：α=0.01</li>
+                            <li>计算$\chi^2$值：</li>
+                                <p>先计算联表中各项的理论值列于理论值表中：</p>
+                                <p>第一个SNP为TA-TA且为干耳垢：</p>
+                                <p>$$E_{11} = \frac{R_{1}C_{1}}{T} = \frac{610 \times 458}{1000} = 279.38$$</p>
+                                <p>第一个SNP为CG-CG且为干耳垢：</p>
+                                <p>$$E_{12} = \frac{R_{1}C_{2}}{T} = \frac{610 \times 542}{1000} = 330.62$$</p>
+                                <p>第一个SNP为CG-CG且为油耳垢：</p>
+                                <p>$$E_{21} = \frac{R_{2}C_{1}}{T} = \frac{390 \times 458}{1000} = 178.62$$</p>
+                                <p>第一个SNP为TA-TA且为油耳垢：</p>
+                                <p>$$E_{22} = \frac{R_{2}C_{2}}{T} = \frac{390 \times 542}{1000} = 211.38$$</p>
+                                <p>列出理论联表：</p>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                        <th></th>
+                                        <th>TA-TA</th>
+                                        <th>CG-CG</th>
+                                        <th>总计($R_i$)</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                        <td>干耳垢</td>
+                                        <td>$E_{11}=279.38$</td>
+                                        <td>$E_{12}=330.62$</td>
+                                        <td>$R_1=610$</td>
+                                        </tr>
+                                        <tr>
+                                        <td>油耳垢</td>
+                                        <td>$E_{21}=178.62$</td>
+                                        <td>$E_{22}=211.38$</td>
+                                        <td>$R_2=390$</td>
+                                        </tr>
+                                        <tr>
+                                        <td>总计($C_j$)</td>
+                                        <td>$C_1=458$</td>
+                                        <td>$C_2=542$</td>
+                                        <td>$T=1000$</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                <p>计算自由度：</p>
+                                <p>$$df = (R-1)(C-1) = (2-1)×(2-1) = 1$$</p>
+                                <p>由于自由度为1，需要进行连续性矫正，此时统计量$\chi^2$的计算公式为：</p>
+                                <p>
+                                    $$
+                                    \begin{aligned}
+                                    \chi^{2}_{c} &= \sum_{i=1, j=1}^{k} \frac{(|O_{ij}-E_{ij}|-0.5)^2}{E_{ij}} \\\\
+                                    &= \frac{(|334-279.38|-0.5)^2}{279.38}
+                                    + \frac{(|276-330.62|-0.5)^2}{330.62}
+                                    + \frac{(|124-178.62|-0.5)^2}{178.62}
+                                    + \frac{(|266-211.38|-0.5)^2}{279.38} \\\\
+                                    &= 10.48384 + 8.85904 + 16.39780 + 10.48384 = 46.2245
+                                    \end{aligned}
+                                    $$
+                                </p>
+                            <li>查表，$df=1$时，$\chi^2_{0.01}=6.63$，而$\chi^{2}_{c}=46.2245>\chi^2_{0.01}$，发生了小概率事件，认为是有显著性独立性，因此在$α=0.01$的水平上，拒绝$H_0$，接受$H_1$。</li>
+                                <p>实际上，我们不会根据第四步去判断受否拒绝$H_0$，而是直接计算出$H_0$发生的概率，毕竟现在计算水平那么高，一个定积分计算机还是能轻易算出来的：</p>
+                                <p>对自由度为1的卡方分布的概率密度函数进行46.2245到无穷大积分：</p>
+                                <p>
+                                    $$
+                                    P(\chi^2_c \ge 46.2245)
+                                    = \int_{46.2245}^{+\infty} f_1(t) \, dt
+                                    = \int_{46.2245}^{+\infty} \frac{1}{\sqrt{2\pi t}} e^{-t/2} \, dt
+                                    $$
+                                </p>
+                                <p>该积分结果约为：</p>
+                                <p>
+                                    $$
+                                    \alpha_1 = P(\chi^2_c \ge 46.2245) \approx 1.0545 \times 10^{-11}
+                                    $$
+                                </p>
+                        </ol>
+                        <p>对另外4个SNP也进行同样的操作，在这里假设：</p>
+                        <p>
+                            $$
+                            \alpha_2 = P(\chi^2_c \ge 20) = \int_{20}^{+\infty} \frac{1}{\sqrt{2\pi t}} e^{-t/2} \, dt\approx 7.7442 \times 10^{-6}
+                            $$
+                        </p>
+                        <p>
+                            $$
+                            \alpha_3 = P(\chi^2_c \ge 10) = \int_{10}^{+\infty} \frac{1}{\sqrt{2\pi t}} e^{-t/2} \, dt\approx 1.5654 \times 10^{-3}
+                            $$
+                        </p>
+                        <p>
+                            $$
+                            \alpha_4 = P(\chi^2_c \ge 2) = \int_{2}^{+\infty} \frac{1}{\sqrt{2\pi t}} e^{-t/2} \, dt\approx 1.5730 \times 10^{-1}
+                            $$
+                        </p>
+                        <p>
+                            $$
+                            \alpha_5 = P(\chi^2_c \ge 1) = \int_{1}^{+\infty} \frac{1}{\sqrt{2\pi t}} e^{-t/2} \, dt\approx 3.1731 \times 10^{-1}
+                            $$
+                        </p>
+                        <p>假设这5个SNP依次分布在同一条染色体上，那么我们就可以画出一个散点图：</p>
+                        <img src="./P1.png" alt="散点图" class="article-img">
+                        <p>其中我们常用阈值为$p=5×10^{-8}$，当这个SNP的p值高于这个阈值时，我们认为这个SNP和这个性状有强相关性。</p>
+                    <h3>3.3 实际上的GWAS</h3>
+                        <p>以上为一个非常简单的GWAS分析示例，实际上，我们会分析会在人类23对染色体中所有的SNP并进行独立性检验，而独立性检验方式并不一定都是2×2列联分析，这个我们稍后会提及。经过分析，我们会得到成千上万的SNP，将不同染色体的SNP依次排开，我们就会得到像曼哈顿城市群一样的散点图，所以我们经过GWAS得到的图叫做曼哈顿图，图中的每一个小点都代表着一个SNP，它的纵坐标就代表着它与我们要分析的性状的相关性可能的大小。</p>
+                        <p>这个是模拟出来的科研中的例图，其与上面的举例图只有点的个数的区别：</p>
+                        <img src="./P2.png" alt="散点图" class="article-img">
+                    <h3>3.4 更复杂GWAS</h3>
+                        <p>在我们的例子中，我们粗暴的将耳垢分为干和油，但是实际上好多特征都不能如此简单粗暴的划分，比如某种植物的花有红橙黄三种颜色（我们分成了三种），亦或者是人类的身高（这个直接无法量子化了）。同时，SNP位点也有多种可能性，需要进行一一分析。</p>
+                        <h4>3.4.1 可量子化特征研究</h4>
+                            <p>首先SNP位点一定是量子化的，它就只有那10种类型，当特征也可以量子化时，例如耳垢（干/油），眼皮（单/双），头发（直/卷），豌豆（甜/不甜），花色（红/橙/黄），果实大小（大/中/小），我们用R×C列联表分析就够了：</p>
+                            <p>$$\chi^2=T[\sum(\frac{O_{ij}^{2}}{R_iC_j})-1]$$</p>
+                            <p>$$df=(R-1)(C-1)$$</p>
+                            <p>注意自由度为1时需要连续性矫正：</p>
+                            <p>
+                                $$
+                                \chi^{2}_{c} = \sum_{i=1, j=1}^{k} \frac{(|O_{ij}-E_{ij}|-0.5)^2}{E_{ij}} 
+                                $$
+                            </p>
+                        <h4>3.4.2 非量子化特征研究</h4>
+                            <p>例如身高，体重，果实重量，寿命等，你不想量子化分析或者不方便量子化分析时，我们就不能用列联表分析。这是使用 线性回归 或者 logistic 回归进行分析，本次不作深入讨论。</p>
+                <h2>4. 你不得不知道的一些事</h2>
+                    <ol>
+                        <li>注意，GWAS分析的仅是相关性，它并不能揭示它们两内在确实存在某种联系，你不光可以分析耳垢和SNP的关系，你可以分析任何你感兴趣的特征与SNP之间的关系，比如躁郁症和SNP的关系，甚至你可以分析喜不喜欢吃汉堡包和SNP之间的关系。总之，你能把看似和基因完全没有一点关系的事物都拿来做一下GWAS分析，但是请牢记：GWAS只是粗暴的将你观察到的现象和基因强行联系到了一起，其具体是由什么通路，机制导致的是你发现这个显著的SNP后应该进一步去研究的。</li>
+                        <li>我们可能会得到多个具有超过阈值显著性的SNP位点，这个时候，我们要将研究重点放在显著性最明显的那个位点上，其它位点根据科研精力和时间进行取舍性研究。</li>
+                    </ol>
+            </div>
+        <footer style="text-align: center; padding: 2rem; color: #7f8c8d;">
+            &copy; 2026 海钊.
+        </footer>
+    </body>
+</html>

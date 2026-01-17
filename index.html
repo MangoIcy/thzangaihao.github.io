@@ -1,117 +1,107 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>海钊知识港</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>海钊知识港</title>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
+        <script>
+            window.MathJax = {
+                tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+            };
+        </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']]
+        <style>
+            /* --- 全局变量与重置 --- */
+            :root {
+                --primary-color: #2c3e50;
+                --accent-color: #3498db;
+                --primary-bg: #f8f9fa;
+                --sidebar-bg: #ffffff;
+                --text-main: #2c3e50;
+                --border-color: #eee;
             }
-        };
-    </script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+            * { box-sizing: border-box; } /* 核心：防止布局错位 */
+            body { 
+                font-family: 'Helvetica Neue', Arial, sans-serif; 
+                background: var(--primary-bg); 
+                color: var(--text-main); 
+                margin: 0; 
+                line-height: 1.6; 
+            }
+            a { text-decoration: none; color: inherit; }
     
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --primary-bg: #f8f9fa;
-            --sidebar-bg: #ffffff;
-            --text-main: #2c3e50;
-            --border-color: #eee;
-        }
+            /* --- 导航栏 (标准化) --- */
+            nav { 
+                background: var(--primary-color); 
+                color: white; 
+                padding: 1rem 2rem; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                position: sticky; top: 0; z-index: 1000; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                line-height: 1.5; /* 核心修复：统一高度 */
+            }
+            nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; }
+            nav .nav-links a { color: rgba(255,255,255,0.9); margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
+            nav .nav-links a:hover { color: var(--accent-color); }
+            nav .nav-links i { margin-right: 5px; }
+    
+            /* --- 布局容器 --- */
+            .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; }
+            .left-col { flex: 1; min-width: 320px; }
+            .right-col { flex: 3; }
+    
+            /* --- 首页左侧栏卡片样式 (这里修复了你的需求) --- */
+            /* 将通用的卡片样式应用到 profile-card 和 category-card 上 */
+            .profile-card, 
+            .category-card { 
+                background: var(--sidebar-bg); /* 白底 */
+                border-radius: 12px; /* 圆角 */
+                padding: 1.5rem; 
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* 阴影 */
+                margin-bottom: 1.5rem; 
+            }
+            
+            /* 头像区 */
+            .avatar { width: 100px; height: 100px; border-radius: 50%; background: #ddd; margin: 0 auto 1rem; display: block; object-fit: cover; }
+            .bio { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
+            
+            /* 分类列表 */
+            .category-card h3 { margin-top: 0; margin-bottom: 1rem; color: #666; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+            .category-item { display: block; padding: 0.8rem; border-radius: 8px; transition: 0.2s; }
+            .category-item:hover { background: #f0f7ff; color: var(--accent-color); }
+            .category-item h4 { margin: 0 0 4px 0; font-size: 1rem; display: flex; align-items: center; }
+            .category-item h4 i { width: 25px; margin-right: 8px; color: var(--primary-color); text-align: center; }
+            .category-item p { margin: 0; font-size: 0.8rem; color: #7f8c8d; padding-left: 33px; }
+    
+            /* --- 右侧笔记卡片 --- */
+            .note-card { 
+                background: white; border-radius: 12px; padding: 2rem; 
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 1.5rem;
+                transition: transform 0.3s, box-shadow 0.3s; 
+                display: block; /* 确保a标签包裹时有效 */
+            }
+            .note-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+            .tag { background: #eef2f3; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; color: #666; display: inline-block; margin-bottom: 0.5rem;}
+            .note-card h3 { margin: 0.5rem 0; color: var(--accent-color); }
+            .note-card small { color: #aaa; display: block; margin-top: 1rem; }
+    
+            /* --- 响应式 --- */
+            @media (max-width: 850px) {
+                .container { flex-direction: column; }
+                nav { flex-direction: column; padding: 1rem; }
+                nav .nav-links { margin-top: 1rem; flex-wrap: wrap; justify-content: center; gap: 10px; }
+                nav .nav-links a { margin: 0; }
+            }
+        </style>
+    </head>
 
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--primary-bg); color: var(--text-main); margin: 0; line-height: 1.6; }
-
-        /* --- 顶栏设计 --- */
-        nav { 
-            background: var(--primary-color); 
-            color: white; 
-            padding: 1rem 2rem; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; text-decoration: none; }
-        nav .nav-links a { color: white; text-decoration: none; margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
-        nav .nav-links a:hover { color: var(--accent-color); }
-        nav .nav-links i { margin-right: 5px; }
-
-        /* --- 容器布局 --- */
-        .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; }
-        
-        /* --- 左侧栏 --- */
-        .left-col { flex: 1; min-width: 280px; }
-        .profile-card, .category-card { 
-            background: var(--sidebar-bg); border-radius: 12px; padding: 1.5rem; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 1.5rem;
-        }
-        .avatar { width: 100px; height: 100px; border-radius: 50%; background: #ddd; margin: 0 auto 1rem; display: block; object-fit: cover; }
-        .bio { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
-        
-        .category-item { display: block; text-decoration: none; color: inherit; padding: 0.8rem; border-radius: 8px; transition: 0.2s; }
-        .category-item:hover { background: #f0f7ff; color: var(--accent-color); }
-        .category-item h4 { margin: 0 0 4px 0; font-size: 1rem; display: flex; align-items: center; }
-        .category-item p { margin: 0; font-size: 0.8rem; color: #7f8c8d; }
-
-        /* 侧边栏图标对齐优化 */
-        .category-item h4 i {
-            width: 25px; 
-            margin-right: 8px; 
-            color: var(--primary-color);
-            text-align: center;
-        }
-
-        /* --- 右侧内容区 --- */
-        .right-col { flex: 3; }
-
-        /* 笔记卡片点击区域优化 */
-        .right-col a {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            margin-bottom: 1.5rem;
-        }
-
-        .note-card { 
-            background: white; 
-            border-radius: 12px; 
-            padding: 2rem; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* 动画过渡 */
-            cursor: pointer;
-        }
-
-        /* 悬停效果：浮起并加深阴影 */
-        .note-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        .note-card h3 { margin-top: 0.5rem; color: var(--accent-color); }
-        .tag { background: #eef2f3; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; color: #666; }
-        .tag i { margin-right: 5px; }
-
-        /* --- 响应式适配 --- */
-        @media (max-width: 850px) {
-            .container { flex-direction: column; }
-            nav { flex-direction: column; padding: 1rem; }
-            nav .nav-links { margin-top: 1rem; display: flex; flex-wrap: wrap; justify-content: center; }
-            nav .nav-links a { margin: 5px 10px; }
-        }
-    </style>
-</head>
 <body>
-
     <nav>
         <div class="logo"><a href="index.html">海钊知识港</a></div>
         <div class="nav-links">
@@ -160,23 +150,23 @@
                     <span class="tag"><i class="fas fa-code"></i> 干实验</span>
                     <h3>富集分析与超几何分布</h3>
                     <p>如何实现一张纸，一只笔，手动计算富集。</p>
-                    <small>2025-11-28</small>
+                    <small>2025-11-25</small>
                 </article>
             </a>
 
-            <a href="#">
+            <a href="articles/dry_lab/data/01. GWAS/GWAS.html">
                 <article class="note-card">
-                    <span class="tag"><i class="fas fa-flask"></i> 湿实验</span>
-                    <h3>植物逆境分子生物学：ABA 信号通路总结</h3>
-                    <p>整理了本科选修课中关于干旱胁迫下 SnRK2 激酶的激活机制。</p>
-                    <small>2026-01-14</small>
+                    <span class="tag"><i class="fas fa-code"></i> 干实验</span>
+                    <h3>GWAS：全基因组关联分析</h3>
+                    <p>如何通过你的基因来判断你是否喜欢吃香菜？</p>
+                    <small>2025-11-28</small>
                 </article>
             </a>
         </section>
     </div>
 
     <footer style="text-align: center; padding: 2rem; color: #7f8c8d;">
-        &copy; 2026 海钊. Powered by GitHub Pages.
+        &copy; 2026 海钊.
     </footer>
 
 </body>

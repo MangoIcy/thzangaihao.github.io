@@ -1,49 +1,90 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>湿实验 - 海钊知识港</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>湿实验索引 - 海钊知识港</title>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <script> window.MathJax = { tex: { inlineMath: [['$', '$']] } }; </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <style>
-        :root { --primary-color: #2c3e50; --accent-color: #3498db; --primary-bg: #f8f9fa; --sidebar-bg: #ffffff; --text-main: #2c3e50; --border-color: #eee; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--primary-bg); color: var(--text-main); margin: 0; }
-        
-        nav { background: var(--primary-color); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; text-decoration: none; }
-        nav .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
-        nav .nav-links a:hover { color: white; }
-        nav .nav-links i { margin-right: 5px; }
-        nav .nav-links a.active { color: var(--accent-color); font-weight: bold; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px; }
+        <style>
+            /* --- 基础变量 (与首页保持一致) --- */
+            :root { --primary-color: #2c3e50; --accent-color: #3498db; --primary-bg: #f8f9fa; --sidebar-bg: #ffffff; --text-main: #2c3e50; }
+            * { box-sizing: border-box; }
+            body { font-family: 'Helvetica Neue', Arial, sans-serif; background: var(--primary-bg); color: var(--text-main); margin: 0; line-height: 1.6; }
+            a { text-decoration: none; color: inherit; }
+    
+            /* --- 导航栏 (标准化) --- */
+            nav { 
+                background: var(--primary-color); 
+                color: white; 
+                padding: 1rem 2rem; 
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                position: sticky; top: 0; z-index: 1000; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                line-height: 1.5; /* 统一高度 */
+            }
+            nav .logo a { font-size: 1.5rem; font-weight: bold; color: white; }
+            nav .nav-links a { color: rgba(255,255,255,0.9); margin-left: 20px; transition: 0.3s; font-size: 0.95rem; }
+            nav .nav-links a:hover { color: var(--accent-color); }
+            nav .nav-links i { margin-right: 5px; }
+            /* 当前页面/高亮状态 (重点) */
+            nav .nav-links a.active { 
+                color: var(--accent-color) !important; /* 强制使用强调色 */
+                font-weight: bold; 
+            }
+    
+            /* --- 布局 --- */
+            .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; min-height: 80vh; }
+            .left-col { flex: 1; min-width: 250px; }
+            .right-col { flex: 3; }
+    
+            /* --- 侧边菜单 (集合列表) --- */
+            .collection-menu { background: var(--sidebar-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 100px; }
+            .collection-menu h3 { margin-top: 0; font-size: 1.1rem; color: #666; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+            
+            .collection-btn { display: block; width: 100%; text-align: left; padding: 10px 15px; margin-bottom: 5px; border: none; background: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; color: var(--text-main); transition: 0.2s; }
+            .collection-btn:hover { background: #f0f7ff; color: var(--accent-color); }
+            .collection-btn.active { background: var(--accent-color); color: white; }
+            .collection-btn i { margin-right: 8px; width: 20px; text-align: center; }
+    
+            /* --- 文章列表区域 --- */
+            .article-list { display: none; animation: fadeIn 0.3s ease; }
+            .article-list.active { display: block; }
+            .list-header { margin-bottom: 1.5rem; border-left: 5px solid var(--accent-color); padding-left: 1rem; }
+            .list-header h2 { margin: 0; font-size: 1.8rem; }
+            .list-header p { color: #666; margin: 5px 0 0 0; }
+    
+            .article-item { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; display: flex; justify-content: space-between; align-items: center; }
+            .article-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 3px solid var(--accent-color); }
+            .article-info h4 { margin: 0 0 5px 0; font-size: 1.1rem; }
+            .article-info p { margin: 0; font-size: 0.85rem; color: #888; }
+            .article-date { font-size: 0.8rem; color: #aaa; white-space: nowrap; margin-left: 1rem; }
+    
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            @media (max-width: 768px) { 
+                .container { flex-direction: column; } 
+                .collection-menu { position: static; margin-bottom: 2rem;} 
+                nav { flex-direction: column; padding: 1rem; }
+                nav .nav-links { margin-top: 1rem; }
+            }
+        </style>
 
-        .container { max-width: 1200px; margin: 2rem auto; display: flex; gap: 2rem; padding: 0 1rem; min-height: 80vh; }
-        .left-col { flex: 1; min-width: 250px; }
-        .collection-menu { background: var(--sidebar-bg); border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 100px; }
-        .collection-menu h3 { margin-top: 0; font-size: 1.1rem; color: #666; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-        
-        .collection-btn { display: block; width: 100%; text-align: left; padding: 10px 15px; margin-bottom: 5px; border: none; background: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; color: var(--text-main); transition: 0.2s; }
-        .collection-btn:hover { background: #f0f7ff; color: var(--accent-color); }
-        .collection-btn.active { background: var(--accent-color); color: white; }
-        .collection-btn i { margin-right: 8px; width: 20px; }
-
-        .right-col { flex: 3; }
-        .article-list { display: none; animation: fadeIn 0.3s ease; }
-        .article-list.active { display: block; }
-        .list-header { margin-bottom: 1.5rem; border-left: 5px solid var(--accent-color); padding-left: 1rem; }
-        .list-header h2 { margin: 0; font-size: 1.8rem; }
-        .list-header p { color: #666; margin: 5px 0 0 0; }
-
-        .article-item { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; }
-        .article-item:hover { transform: translateX(5px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-left: 3px solid var(--accent-color); }
-        .article-info h4 { margin: 0 0 5px 0; font-size: 1.1rem; color: var(--text-main); }
-        .article-info p { margin: 0; font-size: 0.85rem; color: #888; }
-        .article-date { font-size: 0.8rem; color: #aaa; white-space: nowrap; margin-left: 1rem; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { .container { flex-direction: column; } .collection-menu { position: static; } }
-    </style>
-</head>
+        <script>
+            function showCollection(collectionId, btnElement) {
+                const lists = document.querySelectorAll('.article-list');
+                lists.forEach(list => list.classList.remove('active'));
+                document.getElementById(collectionId).classList.add('active');
+                const btns = document.querySelectorAll('.collection-btn');
+                btns.forEach(btn => btn.classList.remove('active'));
+                btnElement.classList.add('active');
+            }
+        </script>
+    </head>
 <body>
 
     <nav>
@@ -111,16 +152,8 @@
 
         </section>
     </div>
-
-    <script>
-        function showCollection(collectionId, btnElement) {
-            const lists = document.querySelectorAll('.article-list');
-            lists.forEach(list => list.classList.remove('active'));
-            document.getElementById(collectionId).classList.add('active');
-            const btns = document.querySelectorAll('.collection-btn');
-            btns.forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-        }
-    </script>
+    <footer style="text-align: center; padding: 2rem; color: #7f8c8d;">
+        &copy; 2026 海钊.
+    </footer>
 </body>
 </html>
