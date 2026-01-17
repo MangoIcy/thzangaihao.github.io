@@ -54,11 +54,37 @@ nav .nav-links a.active {
 .article-date { font-size: 0.8rem; color: #aaa; white-space: nowrap; margin-left: 1rem; }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 768px) { 
+/* --- 移动端响应式 (与首页保持一致) --- */
+@media (max-width: 850px) { /* 建议统一把断点改为 850px，适配平板竖屏 */
+    
     .container { flex-direction: column; } 
     .collection-menu { position: static; margin-bottom: 2rem;} 
+    
+    /* --- 导航栏修复开始 --- */
     nav { flex-direction: column; padding: 1rem; }
-    nav .nav-links { margin-top: 1rem; }
+    
+    nav .nav-links { 
+        margin-top: 1rem; 
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;   /* 允许换行 */
+        justify-content: center; 
+        gap: 10px;
+    }
+    
+    nav .nav-links a { 
+        margin-left: 0;
+        flex: 0 0 45%;     /* 2x2 布局 */
+        text-align: center;
+        white-space: nowrap; /* 禁止文字换行 */
+        
+        /* 手机端按钮样式优化 */
+        padding: 8px 0;
+        background: rgba(255,255,255,0.1);
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+    /* --- 导航栏修复结束 --- */
 }
 
 /* --- 本地图标样式 --- */
